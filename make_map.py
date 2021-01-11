@@ -15,7 +15,7 @@ lats = np.linspace( -90, 90,int((180/dlat)+1))
 
 country_codes = []
 
-counter = 0
+counter = 0.
 
 # Get all countries code to associate integer. Number of 
 # countries is between 190 and 250 depending on the convention.
