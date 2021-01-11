@@ -19,6 +19,9 @@ The tools are:
      cc = countries.CountryChecker('TM_WORLD_BORDERS-0.3.shp')
      print cc.getCountry(countries.Point(49.7821, 3.5708)).iso
 
+In order to run these tools, `gdal` must be available. In order to write netCDF 
+files with ISO codes, `numpy` and `netCDF4` are also required. 
+Note that string variables are allowed only since netCDF version 4 - not `CLASSIC`.
 
 LICENSE:
 
