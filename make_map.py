@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import numpy as np
 #import matplotlib.pyplot as plt
 import countries
@@ -6,8 +8,8 @@ import netCDF4 as nc4
 cc = countries.CountryChecker('TM_WORLD_BORDERS-0.3.shp')
 
 # Parameters used for the output file
-version = '0.1'
-dlon = 0.1 
+version = '0.2'
+dlon = 0.25
 dlat = dlon
 
 lons = np.linspace(-180,180,int((360/dlon)+1))
@@ -16,6 +18,8 @@ lats = np.linspace( -90, 90,int((180/dlat)+1))
 country_codes = []
 
 counter = 0.
+
+print('Getting number of countries:')
 
 # Get all countries code to associate integer. Number of 
 # countries is between 190 and 250 depending on the convention.
@@ -30,6 +34,7 @@ for il in range(len(lons)):
         print(counter/(len(lons)*len(lats))) 
         counter += 1
 
+print('%i countries identified.' % len(country_codes))
 
 # Add non-existent code to start count from 1. Sea/inland waters are = 0.
 country_codes = ['ZZ']+country_codes
@@ -40,6 +45,10 @@ country_codes = np.array(country_codes)
 
 country_vals = np.zeros((len(lats),len(lons)))
 
+counter = 0
+
+print('Starting loop over locations.')
+
 for il in range(len(lats)):
     for jl in range(len(lons)):
 
@@ -48,6 +57,9 @@ for il in range(len(lats)):
         if country_code is not None:
             country_num = np.where(country_codes==country_code.iso)[0][0]
             country_vals[il,jl] = country_num 
+
+        print(counter/(len(lons)*len(lats))) 
+        counter += 1
 
 
 """
@@ -58,8 +70,11 @@ plt.contourf(lons,lats,country_vals.T,levels=levels)
 plt.show()
 """
 
+print('All locations evaluated.')
+print('Starting I/O.')
+
 # Save output file with proper name
-ncout = nc4.Dataset('./countries_gridded_'+str(dlon)+'deg_v'+version+'.nc','w')
+ncout = nc4.Dataset('countries_gridded_'+str(dlon)+'deg_v'+version+'.nc','w')
 
 ncout.createDimension('lat',len(lats))
 ncout.createDimension('lon',len(lons))
@@ -87,3 +102,6 @@ ctrms[:] = country_vals
 ctrms.comment = 'Use iso to get number-country correspondence'
 
 ncout.close()
+
+print('File writing completed. Closing.')
+
